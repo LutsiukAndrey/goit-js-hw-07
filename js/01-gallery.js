@@ -1,41 +1,55 @@
 import { galleryItems } from './gallery-items.js';
 
+// Change code below this line
 const galleryRef = document.querySelector('.gallery');
+let instance = '';
+function showPic(src) {
+  instance = basicLightbox.create(`<img src="${src}"/>`);
+  instance.show();
+}
 
-function createElemetItems(items) {
-  return items
-    .map(item => {
+const createGalleryItem = item => {
+  return item
+    .map(({ preview, original, description, code }) => {
       return `<div class="gallery__item">
-    <a class="gallery__link" href="${item.original}">
-    <img class="gallery__image"
-    src="${item.preview}"
-    data-source="${item.original}"
-      alt="${item.description}"
-      />
-      </a>
-      </div>`;
+      <a class="gallery__link" href="${original}">
+      <img class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+data-code ="${code}"
+      alt="${description}"
+        />
+        </a>
+        </div>`;
     })
     .join('');
-}
-
-const galleryMarkUp = createElemetItems(galleryItems);
-
-galleryRef.insertAdjacentHTML('beforeend', galleryMarkUp);
-
-galleryRef.addEventListener('click', onImageClick);
-
-let imageOnclick;
-
-function onImageClick(event) {
+};
+const onClick = event => {
   event.preventDefault();
+  const { target } = event;
 
-  if (event.target.nodeName !== 'IMG') {
-    console.log('not img');
+  if (target.nodeName !== 'IMG') {
     return;
   }
-  let imgUrl = event.target.dataset.source;
-  imageOnclick = basicLightbox.create(`<img src="${imgUrl}"/>`, {
-    onShow: () => (event.target.src = imgUrl),
-  });
-  imageOnclick.show();
-}
+
+  showPic(event.target.dataset.source);
+};
+document.addEventListener('keydown', event => {
+  let img = document.querySelector(`img[data-code='${event.keyCode}'`);
+  if (event.keyCode == 27) {
+    instance.close();
+    return;
+  }
+  showPic(img.dataset.source);
+  console.log(event.keyCode);
+  // }
+  //  else if(instance.show() || ){
+
+  //   }
+});
+
+const onKeyNumClick = event => {};
+window.addEventListener('keydown', onKeyNumClick);
+
+galleryRef.addEventListener('click', onClick);
+galleryRef.innerHTML = createGalleryItem(galleryItems);
