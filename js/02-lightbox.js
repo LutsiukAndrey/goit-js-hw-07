@@ -17,6 +17,6 @@ console.log(galleryItems);
 const lightbox = new SimpleLightbox('.gallery a', {
   /* options */
   navText: ['-', '+'],
-  animationSpeed: 2500,
+  animationSpeed: 500,
   preloading: false,
 });
